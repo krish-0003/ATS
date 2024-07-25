@@ -50,6 +50,17 @@ def measure_response_time(start_time):
     end_time = time.time()
     return end_time - start_time
 
+def generate_pdf(cover_letter, name):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size = 15)
+    pdf.cell(200, 10, txt = "Cover Letter for " + name, ln = True, align = 'C')
+    pdf.ln(10)
+    pdf.set_font("Arial", size = 10)
+    for line in cover_letter.splitlines():
+        pdf.cell(0, 10, txt = line, ln = True, align = 'L')
+    pdf.output("cover_letter.pdf")
+
 if name:
     if jd:
         ## Process uploaded  PDF's
@@ -136,7 +147,8 @@ if name:
                 st.button("How Can I Improvise my Skills?"),
                 st.button("What are the Keywords that are Missing?"),
                 st.button("Percentage Match"),
-                st.button("Cover Letter")
+                st.button("Cover Letter"),
+                st.button("Download Cover Letter")
             ]
 
             query = [
@@ -145,6 +157,7 @@ if name:
                 "What are the Keywords that are Missing?",
                 "Percentage Match",
                 "Cover Letter",
+                "Download Cover Letter"
             ]
 
             user_input = st.text_input("Your question:")
@@ -191,4 +204,21 @@ if name:
             st.warning("Upload your Resume!")
 else:
     st.warning("Enter Your Name!")
-        
+
+# New button for downloading cover letter
+if st.button("Download Cover Letter as PDF"):
+    start_time = time.time()
+    qa_prompt = ChatPromptTemplate.from_messages(
+        ("system", input_prompts[4]),
+        ("human", "{input}")
+    )
+    question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
+    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+    response = rag_chain.invoke({"input": query[4]})
+    cover_letter = response['answer']
+    response_time = measure_response_time(start_time)
+    st.success(f"Response time: {response_time:.2f} seconds")
+    generate_pdf(cover_letter, name)
+    with open("cover_letter.pdf", "rb") as file:
+        st.download_button("Download Cover Letter", file.read(), "cover_letter.pdf")
+
