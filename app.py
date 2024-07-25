@@ -32,7 +32,7 @@ llm = ChatGroq(model_name="llama-3.1-8b-instant")
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
 ## set up Streamlit 
-st.set_page_config(page_title="AppSageAI", page_icon="🧑‍💻")
+st.set_page_config(page_title="Hii", page_icon="🧑‍💻")
 st.title("AppSageAI")
 st.subheader("Your Intelligent Companion for Tracking and Enhancing Application Performance")
 
