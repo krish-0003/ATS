@@ -7,3 +7,4 @@ langchain_groq
 pypdf
 langchain_huggingface
 faiss-cpu
+FPDF
