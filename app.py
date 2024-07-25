@@ -60,9 +60,8 @@ def generate_pdf(cover_letter, name):
     for line in cover_letter.splitlines():
         pdf.cell(0, 10, txt = line, ln = True, align = 'L')
     pdf.output("cover_letter.pdf")
-    if st.button("Download Cover Letter"):
-        with open("cover_letter.pdf", "rb") as file:
-            st.download_button("Download Cover Letter", file.read(), "cover_letter.pdf")
+    with open("cover_letter.pdf", "rb") as file:
+        st.download_button("Download Cover Letter", file.read(), "cover_letter.pdf")
 
 
 
