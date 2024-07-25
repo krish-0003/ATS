@@ -60,6 +60,11 @@ def generate_pdf(cover_letter, name):
     for line in cover_letter.splitlines():
         pdf.cell(0, 10, txt = line, ln = True, align = 'L')
     pdf.output("cover_letter.pdf")
+    if st.button("Download Cover Letter"):
+        with open("cover_letter.pdf", "rb") as file:
+            st.download_button("Download Cover Letter", file.read(), "cover_letter.pdf")
+
+
 
 if name:
     if jd:
@@ -147,18 +152,15 @@ if name:
                 st.button("How Can I Improvise my Skills?"),
                 st.button("What are the Keywords that are Missing?"),
                 st.button("Percentage Match"),
-                st.button("Cover Letter"),
-                st.button("Download Cover Letter")
-            ]
+                st.button("Cover Letter")            ]
 
             query = [
                 "Tell Me About the Resume",
                 "How Can I Improvise my Skills?",
                 "What are the Keywords that are Missing?",
                 "Percentage Match",
-                "Cover Letter",
-                "Download Cover Letter"
-            ]
+                "Cover Letter"           
+                ]
 
             user_input = st.text_input("Your question:")
 
@@ -181,6 +183,7 @@ if name:
                     st.success(f"Response time: {response_time:.2f} seconds")
                     st.write()
                     st.write("AppSageAI:", response['answer'])
+                    generate_pdf(response['answer'],name)
 
             if user_input:
                 start_time = time.time()
@@ -206,19 +209,17 @@ else:
     st.warning("Enter Your Name!")
 
 # New button for downloading cover letter
-if st.button("Download Cover Letter as PDF"):
-    start_time = time.time()
-    qa_prompt = ChatPromptTemplate.from_messages(
-        ("system", input_prompts[4]),
-        ("human", "{input}")
-    )
-    question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
-    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
-    response = rag_chain.invoke({"input": query[4]})
-    cover_letter = response['answer']
-    response_time = measure_response_time(start_time)
-    st.success(f"Response time: {response_time:.2f} seconds")
-    generate_pdf(cover_letter, name)
-    with open("cover_letter.pdf", "rb") as file:
-        st.download_button("Download Cover Letter", file.read(), "cover_letter.pdf")
+# if st.button("Download Cover Letter as PDF"):
+#     start_time = time.time()
+#     qa_prompt = ChatPromptTemplate.from_messages(
+#         ("system", input_prompts[4]),
+#         ("human", "{input}")
+#     )
+#     question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
+#     rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+#     response = rag_chain.invoke({"input": query[4]})
+#     cover_letter = response['answer']
+#     response_time = measure_response_time(start_time)
+#     st.success(f"Response time: {response_time:.2f} seconds")
+#     generate_pdf(cover_letter, name)
 
